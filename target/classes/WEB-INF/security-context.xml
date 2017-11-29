@@ -1,0 +1,45 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                    http://www.springframework.org/schema/beans/spring-beans.xsd
+                    http://www.springframework.org/schema/security 
+                    http://www.springframework.org/schema/security/spring-security-4.1.xsd">
+    
+    <!-- We will be defining all security related configurations in this file -->
+    
+    <http auto-config="true" use-expressions="true">
+		<intercept-url pattern="/login" access="hasRole('ANONYMOUS')"/>
+		<intercept-url pattern="/logout" access="hasRole('ANONYMOUS') or hasRole('ROLE_DOCTOR') or hasRole('ROLE_SECRETARY') or hasRole('ROLE_ADMIN')"/>
+		<intercept-url pattern="/secretary" access="hasRole('ROLE_SECRETARY')"/>
+		<intercept-url pattern="/secretary/**" access="hasRole('ROLE_SECRETARY')"/>
+		<intercept-url pattern="/doctor**" access="hasRole('ROLE_DOCTOR')"/>
+		<intercept-url pattern="/admin" access="hasRole('ROLE_ADMIN')"/>
+        <form-login authentication-failure-url="/login?error"/> <!-- We will just use the built-in form login page in Spring -->
+    </http>
+    
+   <!-- <beans:bean id="daoAuthenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+	    <beans:property name="userDetailsService" ref="userDetailsService" ></beans:property>
+	</beans:bean>
+	 -->
+	<authentication-manager>
+	    <authentication-provider>
+	        <user-service>
+	        <user name="doctor" password="doctor" authorities="ROLE_DOCTOR"/>
+	        <user name="doc" password="doc" authorities="ROLE_DOCTOR"/>
+	        <user name="secretara" password="secretara" authorities="ROLE_SECRETARY"/>
+	        <user name="admin" password="admin" authorities="ROLE_ADMIN"/>
+	        </user-service>
+	    </authentication-provider>
+	</authentication-manager>
+<!-- 	
+	<beans:bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
+    <beans:constructor-arg>
+        <beans:list>
+            <beans:ref bean="daoAuthenticationProvider" />
+        </beans:list>
+    </beans:constructor-arg>
+	</beans:bean>
+	 -->
+
+</beans:beans>
